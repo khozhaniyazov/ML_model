@@ -1,0 +1,15 @@
+{
+    "detections": [
+        {
+            "class_id": 1,
+            "class_name": "Seal",
+            "confidence": 0.8213,
+            "bbox": [
+                1160.06,
+                2401.24,
+                2120.05,
+                3346.39
+            ]
+        }
+    ]
+}

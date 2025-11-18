@@ -7,10 +7,9 @@ import os
 import time
 import zipfile
 import cv2
-import numpy as np
-
 import json
 import fitz  # PyMuPDF
+from collections import defaultdict
 
 
 def export_json(results, output_path_json):
@@ -150,79 +149,89 @@ def index():
             img = Image.open(input_path)
             images.append((img, 1))
 
-        # Run YOLO on each image/page
-        all_results = []
+        # Process each image/page with YOLO
         output_paths = []
         json_results = []
-
+        detection_times = []
+        results_with_time = []
+        all_detections = defaultdict(int)
+        
         for img, page_number in images:
             img_np = np.array(img)
+            
+            # Time the detection
+            start_time = time.time()
             results = model(img_np)
+            end_time = time.time()
+            
+            detection_time = round(end_time - start_time, 2)
+            detection_times.append(detection_time)
+            
+            # Get annotated image
             annotated = results[0].plot()
-
+            
+            # Count detections per class for this page
+            page_stats = defaultdict(int)
+            for box in results[0].boxes:
+                cls = int(box.cls)
+                class_name = results[0].names[cls]
+                all_detections[class_name] += 1
+                page_stats[class_name] += 1
+            
             # Save output image
             output_filename = f"result_page{page_number}_" + os.path.splitext(file.filename)[0] + ".png"
             output_path = os.path.join(RESULT_FOLDER, output_filename)
             Image.fromarray(annotated).save(output_path)
             output_paths.append(output_path)
-
+            
             # Save JSON
             json_filename = f"{os.path.splitext(file.filename)[0]}_page{page_number}.json"
             json_output_path = os.path.join(RESULT_FOLDER, json_filename)
             export_json(results, json_output_path)
             json_results.append(json_filename)
-
-            all_results.append(results)
-
-            zip_filename = os.path.splitext(file.filename)[0] + "_results.zip"
-            zip_path = os.path.join(RESULT_FOLDER, zip_filename)
-
-            with zipfile.ZipFile(zip_path, 'w') as zipf:
-                for json_file in json_results:
-                    zipf.write(os.path.join(RESULT_FOLDER, json_file), arcname=json_file)
-
-
-            detection_times = []
-
-            for img, page_number in images:
-                img_np = np.array(img)
-
-                start_time = time.time()        # начало таймера
-                results = model(img_np)         # детекция
-                end_time = time.time()          # конец таймера
-
-                detection_time = round(end_time - start_time, 2)  # время в секундах
-                detection_times.append(detection_time)
-                
-                annotated = results[0].plot()
-
-                # Сохраняем изображение с результатами
-                output_filename = f"result_page{page_number}_" + os.path.splitext(file.filename)[0] + ".png"
-                output_path = os.path.join(RESULT_FOLDER, output_filename)
-                Image.fromarray(annotated).save(output_path)
-                output_paths.append(output_path)
-
-                # JSON
-                json_filename = f"{os.path.splitext(file.filename)[0]}_page{page_number}.json"
-                json_output_path = os.path.join(RESULT_FOLDER, json_filename)
-                export_json(results, json_output_path)
-                json_results.append(json_filename)
-
-                all_results.append(results)
-
-            results_with_time = list(zip(output_paths, detection_times))
-
-            return render_template(
-                "index.html",
-                input_image=input_path,
-                output_image=output_paths,
-                json_zip=zip_filename   # <-- single zip file
-            )
+            
+            # Store results with time and page stats
+            results_with_time.append((
+                output_path,
+                detection_time,
+                {
+                    'signatures': page_stats.get('signature', 0),
+                    'stamps': page_stats.get('stamp', 0),
+                    'qr_codes': page_stats.get('qr', 0)
+                }
+            ))
+        
+        # Create ZIP file with all JSON results
+        zip_filename = os.path.splitext(file.filename)[0] + "_results.zip"
+        zip_path = os.path.join(RESULT_FOLDER, zip_filename)
+        with zipfile.ZipFile(zip_path, 'w') as zipf:
+            for json_file in json_results:
+                zipf.write(os.path.join(RESULT_FOLDER, json_file), arcname=json_file)
+        
+        # Calculate statistics
+        total_detections = sum(all_detections.values())
+        avg_time = round(sum(detection_times) / len(detection_times), 2) if detection_times else 0
+        
+        stats = {
+            'total_detections': total_detections,
+            'signatures': all_detections.get('signature', 0),
+            'stamps': all_detections.get('stamp', 0),
+            'qr_codes': all_detections.get('qr', 0),
+            'avg_time': avg_time
+        }
+        
+        return render_template(
+            "index.html",
+            input_image=input_path,
+            results_with_time=results_with_time,
+            json_zip=zip_filename,
+            stats=stats
+        )
 
 
     
 
-    return render_template("index.html", input_image=None, output_image=None)
+    return render_template("index.html", input_image=None, results_with_time=None, json_zip=None, stats=None)
 
 @app.route("/download/<path:filename>")
 def download_file(filename):
