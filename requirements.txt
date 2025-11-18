@@ -1,0 +1,6 @@
+flask
+ultralytics
+pillow
+numpy
+opencv-python
+pymupdf

@@ -1,0 +1,92 @@
+{
+    "detections": [
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.8689,
+            "bbox": [
+                3941.25,
+                4691.25,
+                4774.17,
+                5539.53
+            ]
+        },
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.8671,
+            "bbox": [
+                242.3,
+                4690.48,
+                1093.17,
+                5507.17
+            ]
+        },
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.8662,
+            "bbox": [
+                230.45,
+                5622.59,
+                1087.34,
+                6430.33
+            ]
+        },
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.8651,
+            "bbox": [
+                1182.97,
+                4696.19,
+                2019.96,
+                5502.92
+            ]
+        },
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.865,
+            "bbox": [
+                1153.62,
+                5620.51,
+                1989.31,
+                6437.0
+            ]
+        },
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.8639,
+            "bbox": [
+                3014.69,
+                4685.62,
+                3850.09,
+                5533.2
+            ]
+        },
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.8595,
+            "bbox": [
+                2091.94,
+                4694.68,
+                2930.82,
+                5521.2
+            ]
+        },
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.7497,
+            "bbox": [
+                4475.38,
+                6487.96,
+                4807.75,
+                6819.4
+            ]
+        }
+    ]
+}

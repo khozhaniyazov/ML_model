@@ -1,0 +1,26 @@
+{
+    "detections": [
+        {
+            "class_id": 1,
+            "class_name": "Seal",
+            "confidence": 0.7891,
+            "bbox": [
+                653.37,
+                1165.75,
+                879.93,
+                1397.17
+            ]
+        },
+        {
+            "class_id": 2,
+            "class_name": "Signature",
+            "confidence": 0.2579,
+            "bbox": [
+                685.57,
+                1319.05,
+                745.91,
+                1356.78
+            ]
+        }
+    ]
+}

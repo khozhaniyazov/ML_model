@@ -1,0 +1,48 @@
+{
+    "detections": [
+        {
+            "class_id": 2,
+            "class_name": "Signature",
+            "confidence": 0.7639,
+            "bbox": [
+                590.09,
+                337.4,
+                864.27,
+                438.34
+            ]
+        },
+        {
+            "class_id": 1,
+            "class_name": "Seal",
+            "confidence": 0.7605,
+            "bbox": [
+                543.8,
+                139.26,
+                779.03,
+                366.76
+            ]
+        },
+        {
+            "class_id": 2,
+            "class_name": "Signature",
+            "confidence": 0.6115,
+            "bbox": [
+                580.47,
+                322.72,
+                916.31,
+                440.5
+            ]
+        },
+        {
+            "class_id": 2,
+            "class_name": "Signature",
+            "confidence": 0.3027,
+            "bbox": [
+                531.33,
+                175.92,
+                737.49,
+                302.45
+            ]
+        }
+    ]
+}

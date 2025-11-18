@@ -1,0 +1,70 @@
+{
+    "detections": [
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.8779,
+            "bbox": [
+                62.33,
+                1366.37,
+                291.81,
+                1596.59
+            ]
+        },
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.8721,
+            "bbox": [
+                320.06,
+                1365.72,
+                552.15,
+                1594.14
+            ]
+        },
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.8716,
+            "bbox": [
+                575.64,
+                1365.65,
+                804.9,
+                1595.8
+            ]
+        },
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.8697,
+            "bbox": [
+                828.53,
+                1365.07,
+                1056.56,
+                1596.09
+            ]
+        },
+        {
+            "class_id": 1,
+            "class_name": "Seal",
+            "confidence": 0.6143,
+            "bbox": [
+                370.59,
+                84.02,
+                482.24,
+                213.63
+            ]
+        },
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.4949,
+            "bbox": [
+                370.23,
+                80.0,
+                483.69,
+                213.18
+            ]
+        }
+    ]
+}

@@ -1,0 +1,59 @@
+{
+    "detections": [
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.8706,
+            "bbox": [
+                294.99,
+                1385.84,
+                523.16,
+                1612.55
+            ]
+        },
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.8659,
+            "bbox": [
+                803.38,
+                1385.2,
+                1029.51,
+                1612.7
+            ]
+        },
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.865,
+            "bbox": [
+                550.51,
+                1384.94,
+                776.48,
+                1612.13
+            ]
+        },
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.8559,
+            "bbox": [
+                48.07,
+                1388.67,
+                270.45,
+                1612.02
+            ]
+        },
+        {
+            "class_id": 0,
+            "class_name": "QR-code",
+            "confidence": 0.7953,
+            "bbox": [
+                353.21,
+                69.33,
+                462.72,
+                204.15
+            ]
+        }
+    ]
+}
