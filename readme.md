@@ -3,15 +3,15 @@
 A modern Flask web application for detecting signatures, stamps, and QR codes on images or PDF files using a custom YOLO model.
 
 ## Features
-- 🎨 Modern, responsive UI with animations and gradients
-- 📄 Accepts images (JPG, PNG) and PDF files
-- 🔍 Converts PDFs to images using PyMuPDF
-- 🤖 Runs YOLO detection on each page
-- 📊 Real-time statistics dashboard
-- 💾 Saves annotated images with detection results
-- 📦 Exports detection results as JSON
-- 📥 Creates a ZIP archive with all JSON files
-- ⚡ Per-page processing time tracking
+-  Modern, responsive UI with animations and gradients
+-  Accepts images (JPG, PNG) and PDF files
+-  Converts PDFs to images using PyMuPDF
+-  Runs YOLO detection on each page
+-  Real-time statistics dashboard
+-  Saves annotated images with detection results
+-  Exports detection results as JSON
+-  Creates a ZIP archive with all JSON files
+-  Per-page processing time tracking
 
 ## Local Installation & Setup
 

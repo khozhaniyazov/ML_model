@@ -1,14 +1,14 @@
 
 from flask import Flask, render_template, request, send_from_directory, jsonify, flash
-from ultralytics import YOLO
+from ultralytics import YOLO 
 from PIL import Image
 import numpy as np
 import os
 import time
 import zipfile
-import cv2
+import cv2 
 import json
-import fitz  # PyMuPDF
+import fitz  
 from collections import defaultdict
 from werkzeug.utils import secure_filename
 import csv
@@ -87,16 +87,16 @@ def draw_pretty_boxes(image, results):
     """
     img = image.copy()
 
-    # Color per class (signature, stamp, qr)
-    class_colors = {
-        0: (92, 180, 255),   # signature – light blue
-        1: (80, 220, 120),   # stamp – greenish
-        2: (255, 150, 60),   # qr – orange
-    }
 
-    # Dynamic scaling relative to image diagonal
+    class_colors = {
+        0: (92, 180, 255),   
+        1: (80, 220, 120),   
+        2: (255, 150, 60),
+        }
+
+ 
     diag = np.sqrt(img.shape[0]**2 + img.shape[1]**2)
-    font_scale = diag / 1500   # adjust if needed
+    font_scale = diag / 1500   
     font_thickness = max(2, int(diag / 2000))
 
     for box in results[0].boxes:
@@ -107,17 +107,17 @@ def draw_pretty_boxes(image, results):
         color = class_colors.get(cls, (200, 200, 200))
         label = f"{results[0].names[cls].upper()}  {int(conf*100)}%"
 
-        # ----- Draw main bounding box -----
+   
         cv2.rectangle(img, (x1, y1), (x2, y2), color, 3, cv2.LINE_AA)
 
-        # ----- Compute label box -----
+
         (text_w, text_h), baseline = cv2.getTextSize(
             label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness
         )
 
         label_y = y1 - 12 if y1 - 12 > 0 else y1 + text_h + 12
 
-        # Label background (bigger, cleaner)
+     
         cv2.rectangle(
             img,
             (x1, label_y - text_h - 10),
@@ -127,7 +127,7 @@ def draw_pretty_boxes(image, results):
             cv2.LINE_AA
         )
 
-        # ----- Put text -----
+   
         cv2.putText(
             img,
             label,
@@ -143,17 +143,17 @@ def draw_pretty_boxes(image, results):
 
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)  # For flash messages
+app.secret_key = os.urandom(24)  
 
 UPLOAD_FOLDER = "static/uploads"
 RESULT_FOLDER = "static/results"
-MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
+MAX_FILE_SIZE = 50 * 1024 * 1024  
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'pdf', 'gif', 'bmp', 'webp'}
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(RESULT_FOLDER, exist_ok=True)
 
-# Load model with error handling
+
 try:
     model = YOLO("my_model.pt")
 except Exception as e:
@@ -174,10 +174,10 @@ def validate_file(file):
     if not allowed_file(file.filename):
         return False, f"File type not allowed. Allowed types: {', '.join(ALLOWED_EXTENSIONS)}"
     
-    # Check file size
+   
     file.seek(0, os.SEEK_END)
     file_size = file.tell()
-    file.seek(0)  # Reset file pointer
+    file.seek(0) 
     
     if file_size > MAX_FILE_SIZE:
         return False, f"File too large. Maximum size: {MAX_FILE_SIZE / (1024*1024):.0f}MB"
@@ -190,7 +190,6 @@ def validate_file(file):
 def index():
     if request.method == "POST":
         try:
-            # Check if model is loaded
             if model is None:
                 return render_template(
                     "index.html",
@@ -201,7 +200,6 @@ def index():
                     stats=None
                 )
             
-            # Validate file upload
             if "image" not in request.files:
                 return render_template(
                     "index.html",
@@ -225,24 +223,22 @@ def index():
                     stats=None
                 )
 
-            # Get confidence threshold from form (default 0.25)
+ 
             conf_threshold = float(request.form.get('conf_threshold', 0.25))
-            conf_threshold = max(0.0, min(1.0, conf_threshold))  # Clamp between 0 and 1
+            conf_threshold = max(0.0, min(1.0, conf_threshold))  
 
-            # Secure filename and save
             filename = secure_filename(file.filename)
             timestamp = int(time.time())
             safe_filename = f"{timestamp}_{filename}"
             input_path = os.path.join(UPLOAD_FOLDER, safe_filename)
             file.save(input_path)
             
-            # Detect if PDF or image
             filename_lower = filename.lower()
             images = []
             
             try:
                 if filename_lower.endswith(".pdf"):
-                    # Convert PDF to images using PyMuPDF
+
                     doc = fitz.open(input_path)
                     if len(doc) == 0:
                         return render_template(
@@ -277,7 +273,6 @@ def index():
                     stats=None
                 )
 
-            # Process each image/page with YOLO
             output_paths = []
             json_results = []
             csv_results = []
@@ -289,8 +284,7 @@ def index():
             for img, page_number in images:
                 try:
                     img_np = np.array(img)
-                    
-                    # Time the detection
+
                     start_time = time.time()
                     results = model(img_np, conf=conf_threshold)  # Apply confidence threshold
                     end_time = time.time()
@@ -298,10 +292,7 @@ def index():
                     detection_time = round(end_time - start_time, 2)
                     detection_times.append(detection_time)
                     
-                    # Get annotated image
                     annotated = results[0].plot()
-                    
-                    # Count detections per class for this page
                     page_stats = defaultdict(int)
                     for box in results[0].boxes:
                         cls = int(box.cls)
@@ -309,21 +300,20 @@ def index():
                         all_detections[class_name] += 1
                         page_stats[class_name] += 1
                     
-                    # Save output image
+
                     base_name = os.path.splitext(safe_filename)[0]
                     output_filename = f"result_page{page_number}_{base_name}.png"
                     output_path = os.path.join(RESULT_FOLDER, output_filename)
                     Image.fromarray(annotated).save(output_path)
                     output_paths.append(output_path)
                     
-                    # Save JSON
+
                     json_filename = f"{base_name}_page{page_number}.json"
                     json_output_path = os.path.join(RESULT_FOLDER, json_filename)
                     detections = export_json(results, json_output_path, conf_threshold)
                     all_detections_list.append(detections)
                     json_results.append(json_filename)
                     
-                    # Store results with time and page stats
                     results_with_time.append((
                         output_path,
                         detection_time,
@@ -342,8 +332,6 @@ def index():
                         json_zip=None,
                         stats=None
                     )
-            
-            # Create ZIP file with all JSON results
             base_name = os.path.splitext(safe_filename)[0]
             zip_filename = f"{base_name}_results.zip"
             zip_path = os.path.join(RESULT_FOLDER, zip_filename)
@@ -353,7 +341,6 @@ def index():
                     for json_file in json_results:
                         zipf.write(os.path.join(RESULT_FOLDER, json_file), arcname=json_file)
                     
-                    # Add CSV to ZIP
                     csv_filename = f"{base_name}_results.csv"
                     csv_path = os.path.join(RESULT_FOLDER, csv_filename)
                     export_csv(all_detections_list, csv_path)
@@ -363,7 +350,6 @@ def index():
             except Exception as e:
                 print(f"Error creating ZIP: {e}")
             
-            # Calculate statistics
             total_detections = sum(all_detections.values())
             avg_time = round(sum(detection_times) / len(detection_times), 2) if detection_times else 0
             
@@ -406,7 +392,6 @@ def download_file(filename):
     return send_from_directory(RESULT_FOLDER, filename, as_attachment=True)
 
 
-# >>> REQUIRED FOR FLASK TO RUN <<<
 if __name__ == "__main__":
     print("Starting Flask server on http://127.0.0.1:5000")
     app.run(host="0.0.0.0", port=5000, debug=True)
