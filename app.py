@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, send_from_directory, jsonify, flash
 from ultralytics import YOLO 
 from PIL import Image

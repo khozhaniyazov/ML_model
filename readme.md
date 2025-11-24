@@ -1,6 +1,4 @@
-# AI Document Inspector - YOLO Document Scanner
-
-A modern Flask web application for detecting signatures, stamps, and QR codes on images or PDF files using a custom YOLO model.
+# Aplication for detecting signatures, stamps, and QR codes on images or PDF files using YOLO11s model.
 
 ## Features
 -  Modern, responsive UI with animations and gradients
